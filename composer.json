@@ -1,2 +1,17 @@
 {
+  "name": "speter/ispconfig",
+  "description": "ISPConfig additional stuff",
+  "type": "library",
+  "authors": [
+    {
+      "name": "Peter Sarai",
+      "email": "saraiptr@gmail.com"
+    }
+  ],
+  "require": {},
+  
+  "autoload": {
+    "psr-4": {"SPeter\\ISPConfig\\": "SPeter/ISPConfig"}
+  }
+
 }
