@@ -3,26 +3,14 @@
  * Created by PhpStorm.
  * User: Pepe
  * Date: 2018. 05. 20.
- * Time: 12:12
+ * Time: 16:25
  */
 
 namespace SPeter\ISPConfig\API\REST\Entity;
 
 
-class Base
+class Template extends Base
 {
-    protected $params = [];
-
-    public function fill($data)
-    {
-        if (is_array($data)) {
-            foreach($data as $key => $value) {
-                $this->$key = $data[$key];
-            }
-            return $this;
-        }
-        throw new \InvalidArgumentException('Provided argument is not an array');
-    }
 
     public function getParams()
     {
@@ -52,19 +40,4 @@ class Base
         }
     }
 
-    private function getSetterName($member)
-    {
-        $spaced = preg_replace('/_/', ' ', strtolower($member));
-        return 'set'.preg_replace('/ /', '', ucwords($spaced));
-    }
-
-    protected function deCamelize($input)
-    {
-        return ltrim(strtolower(preg_replace('/[A-Z]([A-Z](?![a-z]))*/', '_$0', $input)), '_');
-    }
-
-    protected function camelize($input)
-    {
-        return preg_replace('/(^|_)([a-z])/e', 'strtoupper("\\2")', $input);
-    }
 }

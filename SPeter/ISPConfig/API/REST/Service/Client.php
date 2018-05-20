@@ -7,7 +7,7 @@ use SPeter\ISPConfig\API\REST\Exception\GeneralRESTException;
 class Client extends Session
 {
 
-    public function getClient($client)
+    public function get($client)
     {
         if (is_numeric($client)) {
             $clientId = $client;
@@ -34,7 +34,7 @@ class Client extends Session
         return $response->message();
     }
 
-    public function addClient(ClientEntity $client, $resellerId = 0)
+    public function add(ClientEntity $client, $resellerId = 0)
     {
         // resellerId  has to be 0 if the client shall not be assigned to admin or if the client is a reseller
         $params = $array = json_decode(json_encode($client), true);
@@ -51,10 +51,10 @@ class Client extends Session
         throw new GeneralRESTException($response->message());
     }
 
-    public function updateClient(ClientEntity $client)
+    public function update(ClientEntity $client)
     {
         // Remove password and SSH keys because we don!t want to update it
-        $client->password = '';
+        $client->setPassword('');
         if (isset($client->id_rsa)) {
             unset($client->id_rsa);
         }
@@ -62,12 +62,12 @@ class Client extends Session
             unset($client->ssh_rsa);
         }
 
-        $resellerId = $client->parent_client_id;
+        $resellerId = $client->getParentClientId();
 
         $params = $array = json_decode(json_encode($client), true);
         $response = $this->connection->call('client_update', [
                 'session_id' => $this->sessionId,
-                'client_id' => $client->client_id,
+                'client_id' => $client->getClientId(),
                 'reseller_id' => $resellerId,
                 'params' => $params
             ]
@@ -76,7 +76,7 @@ class Client extends Session
         return $response->response();
     }
 
-    public function deleteClient($clientId)
+    public function delete($clientId)
     {
         $response = $this->connection->call('client_delete', [
                 'session_id' => $this->sessionId,
@@ -84,6 +84,55 @@ class Client extends Session
             ]
         );
         return $response->response();
+    }
+
+    public function getSites(ClientEntity $client)
+    {
+        $response = $this->connection->call('client_get_sites_by_user', [
+                'session_id' => $this->sessionId,
+                'sys_userid' => $client->getSysUserid(),
+                'sys_groupid' => $client->getSysGroupid()
+            ]
+        );
+
+        if ($response->successful()) {
+            $responseData = $response->response();
+            if (is_array($responseData)) {
+                $results = [];
+                foreach ($responseData as $data) {
+                    $entity = new \SPeter\ISPConfig\API\REST\Entity\WebDomain;
+                    $entity->fill($data);
+                    $results[] = $entity;
+                }
+                return $results;
+            }
+        }
+
+        return $response->message();
+    }
+
+    public function getTemplates()
+    {
+        $response = $this->connection->call('client_templates_get_all', [
+                'session_id' => $this->sessionId
+            ]
+        );
+
+        if ($response->successful()) {
+            $responseData = $response->response();
+            if (is_array($responseData)) {
+                $results = [];
+                foreach ($responseData as $data) {
+                    $entity = new \SPeter\ISPConfig\API\REST\Entity\Template;
+                    $entity->fill($data);
+                    $results[] = $entity;
+                }
+                return $results;
+            }
+        }
+
+        return $response->message();
+
     }
 
 }
