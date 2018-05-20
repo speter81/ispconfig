@@ -2,11 +2,11 @@
 namespace SPeter\ISPConfig\API\REST;
 
 
+use SPeter\ISPConfig\API\REST\Exception\GeneralRESTException;
+
 class Connection
 {
     private $remoteURL;
-
-    protected $sessionId = NULL;
 
     public function __construct($url)
     {
@@ -34,7 +34,7 @@ class Connection
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 
         if(($result = curl_exec($curl)) === false) {
-            throw new Exception('cURL error: '.curl_error($curl));
+            throw new GeneralRESTException('cURL error: '.curl_error($curl));
         }
         curl_close($curl);
 
@@ -45,7 +45,6 @@ class Connection
         if(is_array($resp)) {
             foreach ($resp as $key => $value) {
                 $response->$key = $value;
-
             }
         }
 

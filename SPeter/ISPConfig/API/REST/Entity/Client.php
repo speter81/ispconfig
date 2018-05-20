@@ -1,9 +1,10 @@
 <?php
 namespace SPeter\ISPConfig\API\REST\Entity;
 
-class Client
+class Client extends Base
 {
     public
+        $client_id = NULL,
         $company_name,
         $contact_name,
         $customer_no,
@@ -64,15 +65,9 @@ class Client
         $template_additional = '',
         $created_at = 0;
 
-    public function fill($data)
+    public function getClientId()
     {
-        if (is_array($data)) {
-            foreach($data as $key => $value) {
-                $this->$key = $data[$key];
-            }
-            return $this;
-        }
-        throw new \InvalidArgumentException('Provided argument is not an array');
+        return $this->client_id;
     }
 
 }
