@@ -9,12 +9,7 @@ class Client extends Session
 
     public function get($client)
     {
-        if (is_numeric($client)) {
-            $clientId = $client;
-        } else {
-            $clientId = ['username' => $client];
-        }
-
+        $clientId = ['username' => $client];
         $response = $this->connection->call('client_get', [
                 'session_id' => $this->sessionId,
                 'client_id' => $clientId
@@ -133,6 +128,54 @@ class Client extends Session
 
         return $response->message();
 
+    }
+
+    public function getId($userId)
+    {
+        $response = $this->connection->call('client_get_id', [
+                'session_id' => $this->sessionId,
+                'sys_userid' => $userId
+            ]
+        );
+
+        if ($response->successful()) {
+            return $response->response();
+        }
+
+        return $response->message();
+    }
+
+    public function allId()
+    {
+        $response = $this->connection->call('client_get_all', [
+                'session_id' => $this->sessionId,
+            ]
+        );
+
+        if ($response->successful()) {
+            return $response->response();
+        }
+        return $response->message();
+    }
+
+    public function getById($clientId)
+    {
+        $response = $this->connection->call('client_get', [
+                'session_id' => $this->sessionId,
+                'client_id' => $clientId
+            ]
+        );
+
+        if ($response->successful()) {
+            $clientData = $response->response();
+            if (is_array($clientData)) {
+                $client = new ClientEntity;
+                $client->fill($clientData);
+                return $client;
+            }
+        }
+
+        return $response->message();
     }
 
 }

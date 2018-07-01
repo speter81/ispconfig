@@ -12,7 +12,7 @@ namespace SPeter\ISPConfig\API\REST\Entity;
 class WebDomain extends Base
 {
     protected $params = [
-        'server_id' => 0,
+        'server_id' => 1,
         'ip_address' => '*',
         'domain' => 'test2.int',
         'type' => 'vhost',
@@ -57,5 +57,16 @@ class WebDomain extends Base
         'http_port' => '80',
         'https_port' => '443'
     ];
+
+    public function setPHP($handler)
+    {
+        $validHandlers = [
+            'n', 'fast-cgi', 'php-fpm'
+        ];
+        if ( ! in_array($handler, $validHandlers)) {
+            throw new \Exception("Invalid PHP handler specified");
+        }
+        $this->php = $handler;
+    }
 
 }

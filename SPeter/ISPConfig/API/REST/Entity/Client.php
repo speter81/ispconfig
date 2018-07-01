@@ -50,7 +50,7 @@ class Client extends Base
         $limit_dns_slave_zone = -1,
         $limit_dns_record = -1,
         $default_dbserver = 1,
-        $limit_database = -1,
+        $limit_database = 0,
         $limit_cron = 0,
         $limit_cron_type = 'url',
         $limit_cron_frequency = 5,
@@ -1620,9 +1620,9 @@ class Client extends Base
      * @param int $template_master
      * @return Client
      */
-    public function setTemplateMaster($template_master)
+    public function setTemplateMaster($masterTempalteId)
     {
-        $this->template_master = $template_master;
+        $this->template_master = $masterTempalteId;
         return $this;
     }
 

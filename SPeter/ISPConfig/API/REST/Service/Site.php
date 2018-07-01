@@ -95,22 +95,16 @@ class Site extends Session
     {
         $response = $this->connection->call('sites_web_domain_get', [
                 'session_id' => $this->sessionId,
-                'params' => [
-                    'domain_id' => $domainId
-                    ]
+                'primary_id' => $domainId
             ]
         );
 
         if ($response->successful()) {
             $responseData = $response->response();
+            $site = new \SPeter\ISPConfig\API\REST\Entity\WebDomain();
             if (is_array($responseData)) {
-                $results = [];
-                foreach ($responseData as $key => $siteData) {
-                    $site = new \SPeter\ISPConfig\API\REST\Entity\WebDomain();
-                    $site->fill($siteData);
-                    $results[] = $site;
-                }
-                return $results;
+                $site->fill($responseData);
+                return $site;
             }
         }
 
@@ -125,7 +119,7 @@ class Site extends Session
             'params'    => $webDomain->getParams()
         ];
 
-        $response = $this->connection->call('sites_web_domain_get', $apiParams);
+        $response = $this->connection->call('sites_web_domain_add', $apiParams);
         if ($response->successful()) {
             return true;
         }
@@ -133,13 +127,41 @@ class Site extends Session
         return $response->message();
     }
 
-    public function updateWebDomain()
+    public function updateWebDomain(ClientEntity $client, $domainId, WebDomain $webDomain)
     {
+        $apiParams = [
+            'session_id' => $this->sessionId,
+            'client_id' => $client->getClientId(),
+            'domain_id' => $domainId,
+            'params' => $webDomain->getParams()
+        ];
 
+        $response = $this->connection->call('sites_web_domain_update', $apiParams);
+        if ($response->successful()) {
+            return true;
+        }
+        return $response->message();
     }
 
     public function deleteWebDomain()
     {
+
+    }
+
+    public function getAllWebDomains($userId)
+    {
+        $apiParams = [
+            'session_id' => $this->sessionId,
+            'sys_userid' => $userId
+        ];
+
+        $response = $this->connection->call('client_get_sites_by_user', $apiParams);
+
+        if ($response->successful()) {
+            $responseData = $response->response();
+            return $responseData;
+        }
+        return $response->message();
 
     }
 

@@ -53,7 +53,7 @@ class Manager
         return $service->logout($this->sessionId);
     }
 
-    public function getClient($username)
+    public function getClientByUsername($username)
     {
         $service = $this->getService('Client');
         return $service->get($username);
@@ -103,7 +103,11 @@ class Manager
         return $service->addWebDomain($client, $webDomain);
     }
 
-
+    public function getAllClientWebDomains($userId)
+    {
+        $service = $this->getService('Site');
+        return $service->getAllWebDomains($userId);
+    }
 
     public function getDomain($domainId)
     {
@@ -123,9 +127,6 @@ class Manager
         return $service->getAllByUser($client);
     }
 
-
-
-
     public function getServerByID($serverId)
     {
         $service = $this->getService('Server');
@@ -137,5 +138,24 @@ class Manager
         $service = $this->getService('Server');
         return $service->getServerIdByIP($ipv4Address);
     }
+
+    public function getClientIdByUserId($userId)
+    {
+        $service = $this->getService('Client');
+        return $service->getId($userId);
+    }
+
+    public function getAllClientIds()
+    {
+        $service = $this->getService('Client');
+        return $service->allId();
+    }
+
+    public function getClientById($clientId)
+    {
+        $service = $this->getService('Client');
+        return $service->getById($clientId);
+    }
+
 
 }
