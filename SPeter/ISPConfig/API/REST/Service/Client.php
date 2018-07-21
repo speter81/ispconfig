@@ -73,7 +73,7 @@ class Client extends Session
 
     public function delete($clientId)
     {
-        $response = $this->connection->call('client_delete', [
+        $response = $this->connection->call('client_delete_everything', [
                 'session_id' => $this->sessionId,
                 'client_id' => $clientId,
             ]
